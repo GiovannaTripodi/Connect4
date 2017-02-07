@@ -24,6 +24,7 @@ public class GridPanel extends JPanel {
     int discs[][];
     int lastMove;
     int toMove;
+    int discWidth;
     
     /**
      * Initialize the panel.
@@ -32,6 +33,7 @@ public class GridPanel extends JPanel {
         discs = new int[6][7];
         lastMove = -1;
         toMove = Grid.YELLOW;
+        discWidth = 1;
     }
     
     /**
@@ -59,11 +61,11 @@ public class GridPanel extends JPanel {
         // Compute the size of the circles and of the space between them.
         int width = this.getWidth();
         int height = this.getHeight();
-        int dim = width / 7;
-        if (dim > height / 6)
-            dim = height / 6;
-        int border = dim / 5;
-        int radius = (dim - border) / 2;
+        discWidth = width / 7;
+        if (discWidth > height / 6)
+            discWidth = height / 6;
+        int border = discWidth / 5;
+        int radius = (discWidth - border) / 2;
         
         // Draw the blue grid.
         g2.setColor(Color.BLUE); 
@@ -71,9 +73,9 @@ public class GridPanel extends JPanel {
         
         // Draw the array of circles.
         for (int row = 0; row < 6; row++) {
-            int y = height - ((border / 2) + dim * row) - 2*radius;
+            int y = height - ((border / 2) + discWidth * row) - 2*radius;
             for (int col = 0; col < 7; col++) {
-                int x = (border / 2) + dim * col;
+                int x = (border / 2) + discWidth * col;
                 int disc = discs[row][col];
                 if (disc == Grid.RED)
                     g2.setColor(Color.RED);
@@ -94,11 +96,15 @@ public class GridPanel extends JPanel {
             else
                 g2.setColor(Color.RED);
             GeneralPath tri = new GeneralPath();
-            int x = (border / 2) + dim * lastMove + radius;
+            int x = (border / 2) + discWidth * lastMove + radius;
             tri.moveTo(x, border - 1);
             tri.lineTo(x + triw / 2, border - 1 - trih);
             tri.lineTo(x - triw / 2, border - 1 - trih);
             g2.fill(tri);
         }
     }        
+
+    int getDiscWidth() {
+        return discWidth;
+    }
 }

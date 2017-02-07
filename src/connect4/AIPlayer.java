@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 public class AIPlayer implements Player {
         
     private final static int INF = 20000;
-    private final static int LOSS = 10000;
+    private final static int WIN = 10000;
     private final static int[] COLUMNS = {3, 2, 4, 1, 5, 0, 6};  // order in which the columns are tried
     public static final int TABLE_BITS = 16;
     public static final int HASH_BITS = 30;
@@ -76,7 +76,7 @@ public class AIPlayer implements Player {
             return 0;
 
         if (grid.won())
-            return -LOSS - depth;
+            return -WIN - depth;
 
         int bestVal = -INF;
         int bestMove = 0;

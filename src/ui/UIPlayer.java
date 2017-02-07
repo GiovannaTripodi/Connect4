@@ -65,7 +65,7 @@ public class UIPlayer implements Player, MouseListener {
         synchronized(this) {
             if (active) {
                 int x = me.getX();
-                int col = (7 * x) / gridPanel.getWidth();
+                int col = x / gridPanel.getDiscWidth();
                 if (col >= 0 && col < 7) {                    
                     selectedMove = col;
                     notify();
