@@ -35,7 +35,7 @@ public class Connect4 {
         for (;;) {
             Game game = new Game(players[p], players[1 - p]);
             game.addObserver(win);
-            game.run();
+            game.play();
             p = 1 - p;  // invert the order of the players            
         }
     }    

@@ -47,7 +47,7 @@ public class Game {
     /**
      * Run the game untill its finished.
      */
-    public void run() {
+    public void play() {
         grid.clear();
         Player[] players = new Player[2];
         players[0] = redPlayer;
