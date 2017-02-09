@@ -47,6 +47,11 @@ public class Game {
         return grid;
     }
     
+    /**
+     * Select the next move for the current player.
+     * 
+     * @param move the column index (0-6) of the selected move
+     */
     synchronized public void makeMove(int move) {
         synchronized (this) {
             selectedMove = move;
@@ -63,6 +68,7 @@ public class Game {
         observers.add(obs);
     }
     
+    /* Ask p to move ans wait for its choice. */
     synchronized private int askMove(Player p) {
         selectedMove = -1;
         p.yourTurn(this);

@@ -12,11 +12,8 @@ import connect4.Grid;
 import connect4.Player;
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 
 
@@ -67,49 +64,18 @@ public class Connect4Window extends JFrame implements GameObserver {
         return gridPanel;
     }
 
-    synchronized private void waitClick() {
-        while (!clicked) {
-            try {
-                wait();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Connect4Window.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-    
-    synchronized private void click() {
-        clicked = true;
-        notify();
-    }
-    
-    
-    
     @Override
     public void notifyWinner(Player player, Grid grid) {
-        final String col = (grid.sideToMove() == Grid.RED ? "Yellow" : "Red");
-        clicked = false;
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                JOptionPane.showMessageDialog(null, col + " player wins!",
-                        "Game ended", JOptionPane.INFORMATION_MESSAGE);
-                click();
-            }
-        });
-        waitClick();
+        String msg = (grid.sideToMove() == Grid.RED ? "Yellow" : "Red");
+        msg += " player wins";
+        String title = "Game ended";
+        JOptionPane.showMessageDialog(null, msg, title, JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
     public void notifyDraw(Grid grid) {
-        clicked = false;
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                JOptionPane.showMessageDialog(null, "The game is draw!",
-                        "Game ended", JOptionPane.INFORMATION_MESSAGE);
-                click();
-            }
-        });
-        waitClick();
+        String msg = "The game is draw";
+        String title = "Game ended";
+        JOptionPane.showMessageDialog(null, msg, title, JOptionPane.INFORMATION_MESSAGE);
     }
 }
