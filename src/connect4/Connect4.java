@@ -29,7 +29,7 @@ public class Connect4 {
         Player p2 = new AIPlayer();
         Game game = new Game(p1, p2);
         game.addObserver(win);
-        win.show();
+        win.setVisible(true);
         
         for (;;) {
             game.play();
