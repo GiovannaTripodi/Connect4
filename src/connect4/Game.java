@@ -9,6 +9,8 @@ package connect4;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class representing a single game of connect4.
@@ -21,6 +23,7 @@ public class Game {
     private Player redPlayer;
     private Player yellowPlayer;
     private List<GameObserver> observers;
+    private int selectedMove;
     
     /**
      * Create a new game.
@@ -36,6 +39,22 @@ public class Game {
     }
     
     /**
+     * Access to the grid representing the game.
+     * 
+     * @return the grid
+     */
+    public Grid getGrid() {
+        return grid;
+    }
+    
+    synchronized public void makeMove(int move) {
+        synchronized (this) {
+            selectedMove = move;
+            notify();
+        }
+    }
+    
+    /**
      * Register a new observer.
      * 
      * @param obs the obeserver to be added
@@ -44,42 +63,63 @@ public class Game {
         observers.add(obs);
     }
     
+    synchronized private int askMove(Player p) {
+        selectedMove = -1;
+        p.yourTurn(this);
+        while (selectedMove == -1) {
+            try {
+                wait();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return selectedMove;
+    }
+    
     /**
      * Run the game untill its finished.
      */
     public void play() {
         grid.clear();
-        Player[] players = new Player[2];
-        players[0] = redPlayer;
-        players[1] = yellowPlayer;
-        int p = 0;        
         
         for (GameObserver obs : observers)
             obs.newGame(grid);
         
         for (;;) {
-            int move = players[p].selectMove(grid);
+            // 1.  Ask the current player to move.
+            int move = askMove(grid.sideToMove() == Grid.RED ? redPlayer : yellowPlayer);
+            
+            // 2. Make the move.
             try {
                 grid.makeMove(move);
             } catch (Grid.IllegalMove ex) {
-                continue;  // ask again to the same player
+                continue;
             }
             
-            // Notify the move the observers.
+            // 3. Notify the observers.
             for (GameObserver obs : observers)
                 obs.newMove(move, grid);
-            
-            // Check if the game is finished.
+        
+            // 4. Verify if the game ended.
             if (grid.won()) {
+                Player p = (grid.sideToMove() == Grid.RED ? yellowPlayer : redPlayer);
                 for (GameObserver obs : observers)
-                    obs.notifyWinner(players[p], grid);
+                    obs.notifyWinner(p, grid);
                 break;
             } else if (grid.draw()) {
                 for (GameObserver obs : observers)
                     obs.notifyDraw(grid);
-                break;                
+                break;
             }
-            p = 1 - p;  // change the player
-        }
+        } 
+    }
+    
+    /**
+     * Exchange the order of the two players.
+     */
+    void swapPlayers() {
+        Player temp = redPlayer;
+        redPlayer = yellowPlayer;
+        yellowPlayer = temp;
     }
 }

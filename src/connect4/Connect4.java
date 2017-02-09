@@ -25,18 +25,15 @@ public class Connect4 {
     public static void main(String[] args) {
         
         Connect4Window win = new Connect4Window();
+        Player p1 = new UIPlayer(win.getPanel());
+        Player p2 = new AIPlayer();
+        Game game = new Game(p1, p2);
+        game.addObserver(win);
         win.show();
         
-        Player[] players = new Player[2];
-        players[0] = new UIPlayer(win.getPanel());
-        players[1] = new AIPlayer();        
-                                
-        int p = 0;
         for (;;) {
-            Game game = new Game(players[p], players[1 - p]);
-            game.addObserver(win);
             game.play();
-            p = 1 - p;  // invert the order of the players            
+            game.swapPlayers();
         }
     }    
 }

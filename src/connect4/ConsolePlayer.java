@@ -25,8 +25,7 @@ public class ConsolePlayer implements Player {
         reader = new BufferedReader(new InputStreamReader(System.in));
     }
     
-    @Override
-    public int selectMove(Grid g) {
+    private int selectMove(Grid g) {
         for (;;)  {
             printGrid(g);            
             System.out.print("Enter your move (1-7):");
@@ -54,5 +53,10 @@ public class ConsolePlayer implements Player {
             System.out.println();
         }
         System.out.println(" 1  2  3  4  5  6  7");
+    }
+
+    @Override
+    public void yourTurn(Game game) {
+        game.makeMove(selectMove(game.getGrid()));
     }
 }

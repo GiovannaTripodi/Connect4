@@ -7,12 +7,10 @@
  */
 package ui;
 
-import connect4.Grid;
+import connect4.Game;
 import connect4.Player;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Allow to play the game through the GUI.
@@ -22,8 +20,7 @@ import java.util.logging.Logger;
 public class UIPlayer implements Player, MouseListener {
 
     GridPanel gridPanel;
-    int selectedMove;
-    boolean active;
+    Game waitingGame;   // the game that is waiting the move, or null
     
     /**
      * Initialize the player
@@ -33,42 +30,25 @@ public class UIPlayer implements Player, MouseListener {
     public UIPlayer(GridPanel panel) {
         this.gridPanel = panel;
         panel.addMouseListener(this);
-        active = false;
-        selectedMove = -1;
+        waitingGame = null;
     }
     
     @Override
-    public int selectMove(Grid g) {
-        /* Note that this method and the `mouseClicked' method will be called
-           by different threads.  Therefore we need a form of synchronization. 
-           This method wait until the move is selected by clicking the mouse on
-           the panel. */
-        int move;
-        synchronized(this) {
-            active = true;
-            while (selectedMove < 0) {
-                try {
-                    wait();
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(UIPlayer.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            active = false;
-            move = selectedMove;
-            selectedMove = -1;
+    public void yourTurn(Game game) {
+        synchronized (this) {
+            waitingGame = game;
         }
-        return move;
     }
-
+    
     @Override
     public void mouseClicked(MouseEvent me) {
         synchronized(this) {
-            if (active) {
+            if (waitingGame != null) {
                 int x = me.getX();
                 int col = x / gridPanel.getDiscWidth();
-                if (col >= 0 && col < 7) {                    
-                    selectedMove = col;
-                    notify();
+                if (col >= 0 && col < 7) {
+                    waitingGame.makeMove(col);
+                    waitingGame = null;
                 }
             }
         }

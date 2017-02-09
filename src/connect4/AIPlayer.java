@@ -144,8 +144,7 @@ public class AIPlayer implements Player {
         return x;
     }
     
-    @Override
-    public int selectMove(Grid grid) {
+    private int selectMove(Grid grid) {
         if (grid.numberOfMoves() < 3)
             return randomSelection();
         long startTime = System.currentTimeMillis();
@@ -160,5 +159,10 @@ public class AIPlayer implements Player {
         String msg = "Best move: " + (selectedMove + 1) + " (" + score + ")   found at depth " + depth;
         Logger.getLogger(AIPlayer.class.getName()).info(msg);        
         return selectedMove;
+    }
+    
+    @Override
+    public void yourTurn(Game game) {
+        game.makeMove(selectMove(game.getGrid()));
     }
 }

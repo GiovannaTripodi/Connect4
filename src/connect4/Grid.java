@@ -35,7 +35,7 @@ public class Grid {
     /**
      * Exception used to signal illegal moves.
      */
-    public class IllegalMove extends RuntimeException { };
+    static public class IllegalMove extends RuntimeException { };
 
     int discs[][];  // the 7x6 grid of discs
     int top[];      // the first free row for the 7 columns

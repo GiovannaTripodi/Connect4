@@ -82,6 +82,8 @@ public class Connect4Window extends JFrame implements GameObserver {
         notify();
     }
     
+    
+    
     @Override
     public void notifyWinner(Player player, Grid grid) {
         final String col = (grid.sideToMove() == Grid.RED ? "Yellow" : "Red");

@@ -15,10 +15,9 @@ package connect4;
 public interface Player {
 
     /**
-     * Ask the player to choose the move to make.
+     * Notify the player that its his turn to move.
      * 
-     * @param g the current state of the game
-     * @return the move to make as an integer indicating the column (0-6)
+     * @param game the game the player is playing
      */
-    int selectMove(Grid g);
+    void yourTurn(Game game);
 }
